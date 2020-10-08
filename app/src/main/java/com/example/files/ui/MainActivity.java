@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.files.R;
@@ -71,6 +72,8 @@ public class MainActivity extends AppCompatActivity implements PermissionManager
 
     private void initViews() {
         RecyclerView filesRecycler = findViewById(R.id.filesRecycler);
+        filesRecycler.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+
         filesRecycler.setAdapter(filesAdapter);
     }
 }
