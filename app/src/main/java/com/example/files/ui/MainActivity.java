@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,6 +23,8 @@ import com.example.files.viewmodel.MainViewModel;
 import com.google.android.material.snackbar.Snackbar;
 
 public class MainActivity extends AppCompatActivity implements PermissionManager.Listener {
+
+    private ProgressBar progressBar;
 
     private FileModelAdapter filesAdapter = new FileModelAdapter();
 
@@ -40,6 +43,41 @@ public class MainActivity extends AppCompatActivity implements PermissionManager
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
 
         permissionManager.requestStoragePermission();
+    }
+
+    @Override
+    public void onStoragePermissionGranted() {
+        observe();
+    }
+
+    @Override
+    public void onStoragePermissionDenied() {
+        View rootLayout = findViewById(R.id.rootLayout);
+
+        Snackbar.make(rootLayout, R.string.storage_permission_not_granted, Snackbar.LENGTH_LONG)
+                .setAction(R.string.grant, v -> {
+                    permissionManager.grantStoragePermissionManually();
+                })
+                .show();
+    }
+
+    private void observe() {
+        viewModel.getFiles().observe(this, files -> {
+            filesAdapter.setItems(files);
+        });
+
+        viewModel.getGetFilesProgressState().observe(this, state -> {
+            switch (state) {
+                case IDLE:
+                case DONE:
+                case ERROR:
+                    progressBar.setVisibility(View.GONE);
+                    break;
+                case IN_PROGRESS:
+                    progressBar.setVisibility(View.VISIBLE);
+                    break;
+            }
+        });
     }
 
     @Override
@@ -62,25 +100,9 @@ public class MainActivity extends AppCompatActivity implements PermissionManager
         permissionManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    @Override
-    public void onStoragePermissionGranted() {
-        viewModel.getFiles().observe(this, files -> {
-            filesAdapter.setItems(files);
-        });
-    }
-
-    @Override
-    public void onStoragePermissionDenied() {
-        View rootLayout = findViewById(R.id.rootLayout);
-
-        Snackbar.make(rootLayout, R.string.storage_permission_not_granted, Snackbar.LENGTH_LONG)
-                .setAction(R.string.grant, v -> {
-                    permissionManager.grantStoragePermissionManually();
-                })
-                .show();
-    }
-
     private void initViews() {
+        progressBar = findViewById(R.id.progressBar);
+
         RecyclerView filesRecycler = findViewById(R.id.filesRecycler);
         filesRecycler.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
