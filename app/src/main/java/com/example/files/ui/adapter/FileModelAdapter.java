@@ -18,6 +18,12 @@ public class FileModelAdapter extends RecyclerView.Adapter<FileModelAdapter.View
 
     private List<FileModel> items = Collections.emptyList();
 
+    public void setItems(List<FileModel> items) {
+        this.items = items;
+
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
