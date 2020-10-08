@@ -2,7 +2,10 @@ package com.example.files.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.files.R;
 import com.example.files.ui.adapter.FileModelAdapter;
 import com.example.files.util.PermissionManager;
+import com.example.files.util.Utils;
 import com.example.files.viewmodel.MainViewModel;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -36,6 +40,12 @@ public class MainActivity extends AppCompatActivity implements PermissionManager
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
 
         permissionManager.requestStoragePermission();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
     }
 
     @Override
@@ -75,5 +85,22 @@ public class MainActivity extends AppCompatActivity implements PermissionManager
         filesRecycler.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
         filesRecycler.setAdapter(filesAdapter);
+
+        EditText findEditText = findViewById(R.id.findEditText);
+
+        findEditText.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                // TODO Implement
+
+                Utils.hideSoftInput(MainActivity.this);
+                return true;
+            }
+
+            return false;
+        });
+
+        findViewById(R.id.saveFab).setOnClickListener(v -> {
+            // TODO Implement
+        });
     }
 }
