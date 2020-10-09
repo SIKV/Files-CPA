@@ -9,18 +9,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.files.R;
-import com.example.files.model.FileModel;
+import com.example.files.model.FileItem;
 
 import java.util.Collections;
 import java.util.List;
 
 public class FileModelAdapter extends RecyclerView.Adapter<FileModelAdapter.ViewHolder> {
 
-    private List<FileModel> items = Collections.emptyList();
+    private List<FileItem> items = Collections.emptyList();
 
-    public void setItems(List<FileModel> items) {
+    public void setItems(List<FileItem> items) {
         this.items = items;
-
         notifyDataSetChanged();
     }
 
@@ -53,9 +52,9 @@ public class FileModelAdapter extends RecyclerView.Adapter<FileModelAdapter.View
             pathTextView = itemView.findViewById(R.id.pathTextView);
         }
 
-        void bind(FileModel fileModel) {
-            filenameTextView.setText(fileModel.getFilename());
-            pathTextView.setText(fileModel.getPath());
+        void bind(FileItem fileItem) {
+            pathTextView.setText(fileItem.getFileModel().getPath());
+            filenameTextView.setText(fileItem.getFilename(), TextView.BufferType.SPANNABLE);
         }
     }
 }

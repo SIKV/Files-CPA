@@ -3,4 +3,7 @@
     <color name="colorPrimary">#282828</color>
     <color name="colorPrimaryDark">#191919</color>
     <color name="colorAccent">#FF8A65</color>
+
+    <color name="filenameNormalColor">@android:color/black</color>
+    <color name="filenameHighlightColor">@android:color/holo_orange_dark</color>
 </resources>

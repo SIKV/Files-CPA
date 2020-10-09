@@ -27,9 +27,10 @@ import com.google.android.material.snackbar.Snackbar;
 
 public class MainActivity extends AppCompatActivity implements PermissionManager.Listener {
 
-    private static final String PM_READ_FILES_TAG = "PM_READ_FILES_TAG";
+    private static final String PM_FETCH_FILES_TAG = "PM_FETCH_FILES_TAG";
     private static final String PM_SAVE_FILES_LIST_TAG = "PM_SAVE_FILES_LIST_TAG";
 
+    private RecyclerView filesRecycler;
     private ProgressBar progressBar;
     private FloatingActionButton saveFilesListFab;
 
@@ -45,19 +46,22 @@ public class MainActivity extends AppCompatActivity implements PermissionManager
 
         setContentView(R.layout.activity_main);
 
+        viewModel = new ViewModelProvider.AndroidViewModelFactory(getApplication())
+                .create(MainViewModel.class);
+
+        permissionManager.requestStoragePermission(PM_FETCH_FILES_TAG);
+
         initViews();
         setListeners();
 
-        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
-
-        permissionManager.requestStoragePermission(PM_READ_FILES_TAG);
+        observe();
     }
 
     @Override
     public void onStoragePermissionGranted(String tag) {
         switch (tag) {
-            case PM_READ_FILES_TAG:
-                observe();
+            case PM_FETCH_FILES_TAG:
+                viewModel.fetchFiles();
                 break;
 
             case PM_SAVE_FILES_LIST_TAG:
@@ -72,24 +76,26 @@ public class MainActivity extends AppCompatActivity implements PermissionManager
     }
 
     private void observe() {
-        viewModel.getFiles().observe(this, files -> {
+        viewModel.files().observe(this, files -> {
             filesAdapter.setItems(files);
         });
 
-        viewModel.getGetFilesProgressState().observe(this, state -> {
+        viewModel.fetchFilesProgressState().observe(this, state -> {
             switch (state) {
                 case IDLE:
                 case DONE:
                 case ERROR:
+                    filesRecycler.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
                     break;
                 case IN_PROGRESS:
+                    filesRecycler.setVisibility(View.INVISIBLE);
                     progressBar.setVisibility(View.VISIBLE);
                     break;
             }
         });
 
-        viewModel.getSaveFilesListProgressState().observe(this, state -> {
+        viewModel.saveFilesListProgressState().observe(this, state -> {
             saveFilesListFab.setEnabled(state != ProgressState.IN_PROGRESS);
         });
     }
@@ -140,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements PermissionManager
     private void initViews() {
         progressBar = findViewById(R.id.progressBar);
 
-        RecyclerView filesRecycler = findViewById(R.id.filesRecycler);
+        filesRecycler = findViewById(R.id.filesRecycler);
         filesRecycler.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
         filesRecycler.setAdapter(filesAdapter);
@@ -149,11 +155,14 @@ public class MainActivity extends AppCompatActivity implements PermissionManager
     }
 
     private void setListeners() {
-        EditText findEditText = findViewById(R.id.findEditText);
+        EditText highlightEditText = findViewById(R.id.highlightEditText);
 
-        findEditText.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                // TODO Implement
+        highlightEditText.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                String highlight = v.getText().toString();
+
+                viewModel.highlightFiles(highlight);
+
                 Utils.hideSoftInput(MainActivity.this);
                 return true;
             }

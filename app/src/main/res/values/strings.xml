@@ -3,10 +3,8 @@
 
     <string name="storage_permission_not_granted">Storage permission not granted</string>
     <string name="grant">Grant</string>
-
-    <string name="find_by_filename">Find by filename</string>
+    <string name="highlight_filename">Highlight filename</string>
     <string name="sort">Sort</string>
-
     <string name="file_saved_s">File saved: %s</string>
     <string name="error_saving_file">Error saving file</string>
 </resources>
