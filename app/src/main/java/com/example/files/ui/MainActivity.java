@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,15 +17,21 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.files.R;
+import com.example.files.model.ProgressState;
 import com.example.files.ui.adapter.FileModelAdapter;
 import com.example.files.util.PermissionManager;
 import com.example.files.util.Utils;
 import com.example.files.viewmodel.MainViewModel;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 public class MainActivity extends AppCompatActivity implements PermissionManager.Listener {
 
+    private static final String PM_READ_FILES_TAG = "PM_READ_FILES_TAG";
+    private static final String PM_SAVE_FILES_LIST_TAG = "PM_SAVE_FILES_LIST_TAG";
+
     private ProgressBar progressBar;
+    private FloatingActionButton saveFilesListFab;
 
     private FileModelAdapter filesAdapter = new FileModelAdapter();
 
@@ -39,26 +46,29 @@ public class MainActivity extends AppCompatActivity implements PermissionManager
         setContentView(R.layout.activity_main);
 
         initViews();
+        setListeners();
 
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
 
-        permissionManager.requestStoragePermission();
+        permissionManager.requestStoragePermission(PM_READ_FILES_TAG);
     }
 
     @Override
-    public void onStoragePermissionGranted() {
-        observe();
+    public void onStoragePermissionGranted(String tag) {
+        switch (tag) {
+            case PM_READ_FILES_TAG:
+                observe();
+                break;
+
+            case PM_SAVE_FILES_LIST_TAG:
+                saveFilesList();
+                break;
+        }
     }
 
     @Override
-    public void onStoragePermissionDenied() {
-        View rootLayout = findViewById(R.id.rootLayout);
-
-        Snackbar.make(rootLayout, R.string.storage_permission_not_granted, Snackbar.LENGTH_LONG)
-                .setAction(R.string.grant, v -> {
-                    permissionManager.grantStoragePermissionManually();
-                })
-                .show();
+    public void onStoragePermissionDenied(String tag) {
+        showStoragePermissionNotGranted(v -> permissionManager.grantStoragePermissionManually(tag));
     }
 
     private void observe() {
@@ -77,6 +87,25 @@ public class MainActivity extends AppCompatActivity implements PermissionManager
                     progressBar.setVisibility(View.VISIBLE);
                     break;
             }
+        });
+
+        viewModel.getSaveFilesListProgressState().observe(this, state -> {
+            saveFilesListFab.setEnabled(state != ProgressState.IN_PROGRESS);
+        });
+    }
+
+    private void saveFilesList() {
+        viewModel.saveFilesList().observe(this, filePath -> {
+            String text;
+
+            if (filePath != null) {
+                text = getString(R.string.file_saved_s, filePath);
+            } else {
+                text = getString(R.string.error_saving_file);
+            }
+
+            Toast.makeText(this, text, Toast.LENGTH_LONG)
+                    .show();
         });
     }
 
@@ -100,6 +129,14 @@ public class MainActivity extends AppCompatActivity implements PermissionManager
         permissionManager.onActivityResult(requestCode, resultCode, data);
     }
 
+    private void showStoragePermissionNotGranted(View.OnClickListener listener) {
+        View rootLayout = findViewById(R.id.rootLayout);
+
+        Snackbar.make(rootLayout, R.string.storage_permission_not_granted, Snackbar.LENGTH_LONG)
+                .setAction(R.string.grant, listener)
+                .show();
+    }
+
     private void initViews() {
         progressBar = findViewById(R.id.progressBar);
 
@@ -108,12 +145,15 @@ public class MainActivity extends AppCompatActivity implements PermissionManager
 
         filesRecycler.setAdapter(filesAdapter);
 
+        saveFilesListFab = findViewById(R.id.saveFilesListFab);
+    }
+
+    private void setListeners() {
         EditText findEditText = findViewById(R.id.findEditText);
 
         findEditText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 // TODO Implement
-
                 Utils.hideSoftInput(MainActivity.this);
                 return true;
             }
@@ -121,8 +161,8 @@ public class MainActivity extends AppCompatActivity implements PermissionManager
             return false;
         });
 
-        findViewById(R.id.saveFab).setOnClickListener(v -> {
-            // TODO Implement
+        saveFilesListFab.setOnClickListener(v -> {
+            permissionManager.requestStoragePermission(PM_SAVE_FILES_LIST_TAG);
         });
     }
 }
