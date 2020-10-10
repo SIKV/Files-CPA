@@ -1,8 +1,6 @@
 package com.example.files.viewmodel;
 
 import android.app.Application;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -139,9 +137,7 @@ public class MainViewModel extends AndroidViewModel {
 
                 final int numberOfMatches = highlightedFiles;
 
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    triggerNumberOfMatchesNotification(numberOfMatches);
-                });
+                triggerNumberOfMatchesNotification(numberOfMatches);
             }
         });
     }
