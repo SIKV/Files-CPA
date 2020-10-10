@@ -4,6 +4,7 @@ import android.os.Environment;
 
 import com.example.files.model.FileModel;
 import com.example.files.repository.FilesRepository;
+import com.example.files.util.FileUtils;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -38,7 +39,11 @@ public class ExternalFilesRepository implements FilesRepository {
         if (files != null) {
             for (File file : files) {
                 if (file.isFile()) {
-                    this.files.add(new FileModel(file.getName(), file.getPath()));
+                    this.files.add(new FileModel(
+                            file.getName(),
+                            file.getPath(),
+                            FileUtils.getFileAttributes(file)
+                    ));
                 } else {
                     getAllFiles(file.toURI());
                 }
