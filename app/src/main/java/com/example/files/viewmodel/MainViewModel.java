@@ -1,6 +1,8 @@
 package com.example.files.viewmodel;
 
 import android.app.Application;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -17,6 +19,7 @@ import com.example.files.model.FileModel;
 import com.example.files.model.ProgressState;
 import com.example.files.repository.FilesRepository;
 import com.example.files.repository.impl.ExternalFilesRepository;
+import com.example.files.util.Utils;
 
 import org.json.JSONArray;
 
@@ -37,6 +40,8 @@ public class MainViewModel extends AndroidViewModel {
 
     private MutableLiveData<ProgressState> fetchFilesProgressState = new MutableLiveData<>();
     private MutableLiveData<ProgressState> saveFilesListProgressState = new MutableLiveData<>();
+
+    private MutableLiveData<Integer> numberOfHighlightedFiles = new MutableLiveData<>();
 
     private int filenameNormalColor = ContextCompat.getColor(getApplication(), R.color.colorFilenameNormal);
     private int filenameHighlightColor = ContextCompat.getColor(getApplication(), R.color.colorFilenameHighlight);
@@ -61,8 +66,12 @@ public class MainViewModel extends AndroidViewModel {
         return fetchFilesProgressState;
     }
 
-    public MutableLiveData<ProgressState> saveFilesListProgressState() {
+    public LiveData<ProgressState> saveFilesListProgressState() {
         return saveFilesListProgressState;
+    }
+
+    public LiveData<Integer> numberOfHighlightedFiles() {
+        return numberOfHighlightedFiles;
     }
 
     public void fetchFiles() {
@@ -93,8 +102,11 @@ public class MainViewModel extends AndroidViewModel {
             fetchFiles();
             return;
         }
+
         executorService.submit(() -> {
             List<FileItem> currentFiles = files.getValue();
+
+            int highlightedFiles = 0;
 
             if (currentFiles != null) {
                 List<FileItem> fileItems = new ArrayList<>();
@@ -112,6 +124,8 @@ public class MainViewModel extends AndroidViewModel {
                         highlightEndIndex = filename.length();
 
                         filenameColor = filenameNormalColor;
+                    } else {
+                        highlightedFiles++;
                     }
 
                     fileItems.add(new FileItem(
@@ -121,6 +135,13 @@ public class MainViewModel extends AndroidViewModel {
                 }
 
                 this.files.postValue(fileItems);
+                this.numberOfHighlightedFiles.postValue(highlightedFiles);
+
+                final int numberOfMatches = highlightedFiles;
+
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    triggerNumberOfMatchesNotification(numberOfMatches);
+                });
             }
         });
     }
@@ -144,6 +165,14 @@ public class MainViewModel extends AndroidViewModel {
         });
 
         return savedFilePath;
+    }
+
+    private void triggerNumberOfMatchesNotification(int number) {
+        String text = getApplication().getString(R.string.number_of_matches_d, number);
+        String channel = getApplication().getString(R.string.channel_number_of_matches);
+
+        Utils.triggerNotification(getApplication(), text, R.drawable.ic_highlight_black_24dp,
+                null, channel, channel);
     }
 
     private Spannable createSpannable(String text, int color, int start, int end) {

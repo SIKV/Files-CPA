@@ -105,6 +105,13 @@ public class MainActivity extends AppCompatActivity
         viewModel.saveFilesListProgressState().observe(this, state -> {
             saveFilesListFab.setEnabled(state != ProgressState.IN_PROGRESS);
         });
+
+        viewModel.numberOfHighlightedFiles().observe(this, number -> {
+            String text = getString(R.string.number_of_matches_d, number);
+
+            Toast.makeText(this, text, Toast.LENGTH_LONG)
+                    .show();
+        });
     }
 
     private void saveFilesList() {
