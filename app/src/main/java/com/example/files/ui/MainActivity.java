@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.files.R;
+import com.example.files.model.FileItem;
 import com.example.files.model.ProgressState;
 import com.example.files.ui.adapter.FileModelAdapter;
 import com.example.files.util.PermissionManager;
@@ -25,7 +26,8 @@ import com.example.files.viewmodel.MainViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
-public class MainActivity extends AppCompatActivity implements PermissionManager.Listener {
+public class MainActivity extends AppCompatActivity
+        implements PermissionManager.Listener, FileModelAdapter.OnItemClickListener {
 
     private static final String PM_FETCH_FILES_TAG = "PM_FETCH_FILES_TAG";
     private static final String PM_SAVE_FILES_LIST_TAG = "PM_SAVE_FILES_LIST_TAG";
@@ -34,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements PermissionManager
     private ProgressBar progressBar;
     private FloatingActionButton saveFilesListFab;
 
-    private FileModelAdapter filesAdapter = new FileModelAdapter();
+    private FileModelAdapter filesAdapter = new FileModelAdapter(this);
 
     private MainViewModel viewModel;
 
@@ -73,6 +75,11 @@ public class MainActivity extends AppCompatActivity implements PermissionManager
     @Override
     public void onStoragePermissionDenied(String tag) {
         showStoragePermissionNotGranted(v -> permissionManager.grantStoragePermissionManually(tag));
+    }
+
+    @Override
+    public void onItemClick(FileItem fileItem) {
+        FileDetailsActivity.startActivity(this, fileItem.getFileModel());
     }
 
     private void observe() {

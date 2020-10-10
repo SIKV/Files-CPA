@@ -38,8 +38,8 @@ public class MainViewModel extends AndroidViewModel {
     private MutableLiveData<ProgressState> fetchFilesProgressState = new MutableLiveData<>();
     private MutableLiveData<ProgressState> saveFilesListProgressState = new MutableLiveData<>();
 
-    private int filenameNormalColor = ContextCompat.getColor(getApplication(), R.color.filenameNormalColor);
-    private int filenameHighlightColor = ContextCompat.getColor(getApplication(), R.color.filenameHighlightColor);
+    private int filenameNormalColor = ContextCompat.getColor(getApplication(), R.color.colorFilenameNormal);
+    private int filenameHighlightColor = ContextCompat.getColor(getApplication(), R.color.colorFilenameHighlight);
 
     public MainViewModel(@NonNull Application application) {
         super(application);

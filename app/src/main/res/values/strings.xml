@@ -7,4 +7,12 @@
     <string name="sort">Sort</string>
     <string name="file_saved_s">File saved: %s</string>
     <string name="error_saving_file">Error saving file</string>
+    <string name="file_not_found">File not found</string>
+    <string name="no_preview_available">No preview available</string>
+    <string name="size">Size</string>
+    <string name="creation_time">Creation time</string>
+    <string name="last_modified_time">Last modified time</string>
+
+    <string name="placeholder_empty">-</string>
+    <string name="content_description_file_preview">File preview</string>
 </resources>

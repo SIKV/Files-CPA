@@ -1,14 +1,38 @@
 package com.example.files.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class FileAttributes {
+public class FileAttributes implements Parcelable {
 
     private long creationTime;
     private long lastModifiedTime;
     private String extension;
     private long size;
+
+    public FileAttributes() { }
+
+    private FileAttributes(Parcel in) {
+        creationTime = in.readLong();
+        lastModifiedTime = in.readLong();
+        extension = in.readString();
+        size = in.readLong();
+    }
+
+    public static final Creator<FileAttributes> CREATOR = new Creator<FileAttributes>() {
+        @Override
+        public FileAttributes createFromParcel(Parcel in) {
+            return new FileAttributes(in);
+        }
+
+        @Override
+        public FileAttributes[] newArray(int size) {
+            return new FileAttributes[size];
+        }
+    };
 
     public long getCreationTime() {
         return creationTime;
@@ -55,5 +79,18 @@ public class FileAttributes {
         }
 
         return json;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(creationTime);
+        dest.writeLong(lastModifiedTime);
+        dest.writeString(extension);
+        dest.writeLong(size);
     }
 }

@@ -16,10 +16,21 @@ import java.util.List;
 
 public class FileModelAdapter extends RecyclerView.Adapter<FileModelAdapter.ViewHolder> {
 
+    public interface OnItemClickListener {
+        void onItemClick(FileItem fileItem);
+    }
+
     private List<FileItem> items = Collections.emptyList();
+
+    private OnItemClickListener listener;
+
+    public FileModelAdapter(OnItemClickListener listener) {
+        this.listener = listener;
+    }
 
     public void setItems(List<FileItem> items) {
         this.items = items;
+
         notifyDataSetChanged();
     }
 
@@ -32,7 +43,7 @@ public class FileModelAdapter extends RecyclerView.Adapter<FileModelAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.bind(items.get(position));
+        holder.bind(items.get(position), listener);
     }
 
     @Override
@@ -52,9 +63,11 @@ public class FileModelAdapter extends RecyclerView.Adapter<FileModelAdapter.View
             pathTextView = itemView.findViewById(R.id.pathTextView);
         }
 
-        void bind(FileItem fileItem) {
+        void bind(FileItem fileItem, OnItemClickListener listener) {
             pathTextView.setText(fileItem.getFileModel().getPath());
             filenameTextView.setText(fileItem.getFilename(), TextView.BufferType.SPANNABLE);
+
+            itemView.setOnClickListener(v -> listener.onItemClick(fileItem));
         }
     }
 }
