@@ -9,35 +9,35 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.files.R;
-import com.example.files.model.FileItem;
+import com.example.files.model.FilesSortOption;
 
 import java.util.Collections;
 import java.util.List;
 
-public class FileModelAdapter extends RecyclerView.Adapter<FileModelAdapter.ViewHolder> {
+public class FilesSortOptionAdapter extends RecyclerView.Adapter<FilesSortOptionAdapter.ViewHolder> {
 
     public interface OnItemClickListener {
-        void onItemClick(FileItem fileItem);
+        void onItemClick(FilesSortOption option);
     }
 
-    private List<FileItem> items = Collections.emptyList();
+    private List<FilesSortOption> items = Collections.emptyList();
 
     private OnItemClickListener listener;
 
-    public FileModelAdapter(OnItemClickListener listener) {
-        this.listener = listener;
-    }
-
-    public void setItems(List<FileItem> items) {
+    public void setItems(List<FilesSortOption> items) {
         this.items = items;
 
         notifyDataSetChanged();
     }
 
+    public void setListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_file, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_sort_option, parent, false);
         return new ViewHolder(view);
     }
 
@@ -53,22 +53,19 @@ public class FileModelAdapter extends RecyclerView.Adapter<FileModelAdapter.View
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView filenameTextView;
-        private TextView pathTextView;
+        private TextView sortOptionTextView;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            filenameTextView = itemView.findViewById(R.id.filenameTextView);
-            pathTextView = itemView.findViewById(R.id.pathTextView);
+            sortOptionTextView = itemView.findViewById(R.id.sortOptionTextView);
         }
 
-        void bind(FileItem fileItem, OnItemClickListener listener) {
-            pathTextView.setText(fileItem.getFileModel().getPath());
-            filenameTextView.setText(fileItem.getFilename(), TextView.BufferType.SPANNABLE);
+        void bind(FilesSortOption option, OnItemClickListener listener) {
+            sortOptionTextView.setText(option.caption);
 
             if (listener != null) {
-                itemView.setOnClickListener(v -> listener.onItemClick(fileItem));
+                itemView.setOnClickListener(v -> listener.onItemClick(option));
             }
         }
     }

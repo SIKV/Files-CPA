@@ -3,6 +3,7 @@ package com.example.files.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -42,6 +43,8 @@ public class MainActivity extends AppCompatActivity
 
     private PermissionManager permissionManager = new PermissionManager(this,this);
 
+    private SortFilesDialogFragment sortDialog = new SortFilesDialogFragment();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +60,22 @@ public class MainActivity extends AppCompatActivity
         setListeners();
 
         observe();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.itemSort) {
+            sortDialog.show(getSupportFragmentManager(), null);
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -130,12 +149,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
@@ -186,6 +199,12 @@ public class MainActivity extends AppCompatActivity
 
         saveFilesListFab.setOnClickListener(v -> {
             permissionManager.requestStoragePermission(PM_SAVE_FILES_LIST_TAG);
+        });
+
+        sortDialog.setListener(option -> {
+            viewModel.sortFiles(option);
+
+            sortDialog.dismiss();
         });
     }
 }

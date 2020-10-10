@@ -14,6 +14,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.files.R;
 import com.example.files.model.FileItem;
 import com.example.files.model.FileModel;
+import com.example.files.model.FilesSortOption;
 import com.example.files.model.ProgressState;
 import com.example.files.repository.FilesRepository;
 import com.example.files.repository.impl.ExternalFilesRepository;
@@ -22,6 +23,8 @@ import com.example.files.util.Utils;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -161,6 +164,39 @@ public class MainViewModel extends AndroidViewModel {
         });
 
         return savedFilePath;
+    }
+
+    public void sortFiles(FilesSortOption option) {
+        executorService.submit(() -> {
+            List<FileItem> currentFiles = files.getValue();
+
+            if (currentFiles != null) {
+                Comparator<FileItem> comparator = null;
+
+                switch (option) {
+                    case FILENAME_ASC:
+                        comparator = (first, second) -> first.getFileModel().getFilename()
+                                .compareTo(second.getFileModel().getFilename());
+                        break;
+
+                    case CREATION_TIME_ASC:
+                        comparator = (first, second) -> Long.compare(
+                                first.getFileModel().getAttributes().getCreationTime(),
+                                second.getFileModel().getAttributes().getCreationTime()
+                        );
+                        break;
+
+                    case EXTENSION_ASC:
+                        comparator = (first, second) -> first.getFileModel().getAttributes().getExtension()
+                                .compareTo(second.getFileModel().getAttributes().getExtension());
+                        break;
+                }
+
+                Collections.sort(currentFiles, comparator);
+
+                this.files.postValue(currentFiles);
+            }
+        });
     }
 
     private void triggerNumberOfMatchesNotification(int number) {

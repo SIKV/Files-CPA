@@ -15,6 +15,9 @@
     <string name="creation_time">Creation time</string>
     <string name="last_modified_time">Last modified time</string>
     <string name="number_of_matches_d">Number of matches: %d</string>
+    <string name="sort_by">Sort by</string>
+    <string name="filename">Filename</string>
+    <string name="extension">Extension</string>
 
     <string name="placeholder_empty">-</string>
     <string name="content_description_file_preview">File preview</string>
