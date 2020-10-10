@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#282828</color>
-    <color name="colorPrimaryDark">#191919</color>
-    <color name="colorAccent">#FF8A65</color>
+    <color name="colorPrimary">#202020</color>
+    <color name="colorPrimaryDark">#101010</color>
+    <color name="colorAccent">#4DB6AC</color>
 
-    <color name="filenameNormalColor">@android:color/black</color>
-    <color name="filenameHighlightColor">@android:color/holo_orange_dark</color>
+    <color name="filenameNormalColor">#101010</color>
+    <color name="filenameHighlightColor">@color/colorAccent</color>
 </resources>
