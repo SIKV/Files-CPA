@@ -8,7 +8,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="29" />
 
-    <!-- Android 10 requires requestLegacyExternalStorage="true" -->
+    <!-- Android 10 requires requestLegacyExternalStorage="true". -->
+    <!-- Android 11 doesn't use this flag. -->
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"

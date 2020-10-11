@@ -32,12 +32,17 @@ public class Utils {
         imm.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
     }
 
+    /**
+     * @return the date time string in local format.
+     */
     public static String formatDateTime(long timeMillis) {
         return SimpleDateFormat.getDateTimeInstance().format(new Date(timeMillis));
     }
 
     public static String getFileSize(long size) {
-        // https://stackoverflow.com/a/18099948/7064179
+        /*
+         * https://stackoverflow.com/a/18099948/7064179
+         */
         if (size <= 0) {
             return "0";
         }

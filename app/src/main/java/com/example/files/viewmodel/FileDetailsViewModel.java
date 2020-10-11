@@ -56,6 +56,9 @@ public class FileDetailsViewModel extends AndroidViewModel {
             return;
         }
 
+        /*
+         * Glide should be used as an external dependency.
+         */
         Glide.with(getApplication())
                 .asBitmap()
                 .load(new File(fileModel.getPath()))

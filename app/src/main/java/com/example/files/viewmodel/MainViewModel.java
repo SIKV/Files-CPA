@@ -35,6 +35,7 @@ public class MainViewModel extends AndroidViewModel {
 
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
+    // Should be used as an external dependency.
     private FilesRepository filesRepository = new ExternalFilesRepository();
 
     private MutableLiveData<List<FileItem>> files = new MutableLiveData<>();
@@ -55,7 +56,6 @@ public class MainViewModel extends AndroidViewModel {
     protected void onCleared() {
         super.onCleared();
 
-        // TODO
         executorService.shutdownNow();
     }
 
@@ -92,6 +92,7 @@ public class MainViewModel extends AndroidViewModel {
                 );
             }
 
+            sortFiles(fileItems, FilesSortOption.FILENAME_ASC);
             this.files.postValue(fileItems);
 
             fetchFilesProgressState.postValue(ProgressState.DONE);
@@ -171,32 +172,39 @@ public class MainViewModel extends AndroidViewModel {
             List<FileItem> currentFiles = files.getValue();
 
             if (currentFiles != null) {
-                Comparator<FileItem> comparator = null;
-
-                switch (option) {
-                    case FILENAME_ASC:
-                        comparator = (first, second) -> first.getFileModel().getFilename()
-                                .compareTo(second.getFileModel().getFilename());
-                        break;
-
-                    case CREATION_TIME_ASC:
-                        comparator = (first, second) -> Long.compare(
-                                first.getFileModel().getAttributes().getCreationTime(),
-                                second.getFileModel().getAttributes().getCreationTime()
-                        );
-                        break;
-
-                    case EXTENSION_ASC:
-                        comparator = (first, second) -> first.getFileModel().getAttributes().getExtension()
-                                .compareTo(second.getFileModel().getAttributes().getExtension());
-                        break;
-                }
-
-                Collections.sort(currentFiles, comparator);
-
+                sortFiles(currentFiles, option);
                 this.files.postValue(currentFiles);
             }
         });
+    }
+
+    private void sortFiles(List<FileItem> files, FilesSortOption option) {
+        if (files == null) {
+            return;
+        }
+
+        Comparator<FileItem> comparator = null;
+
+        switch (option) {
+            case FILENAME_ASC:
+                comparator = (first, second) -> first.getFileModel().getFilename()
+                        .compareTo(second.getFileModel().getFilename());
+                break;
+
+            case CREATION_TIME_ASC:
+                comparator = (first, second) -> Long.compare(
+                        first.getFileModel().getAttributes().getCreationTime(),
+                        second.getFileModel().getAttributes().getCreationTime()
+                );
+                break;
+
+            case EXTENSION_ASC:
+                comparator = (first, second) -> first.getFileModel().getAttributes().getExtension()
+                        .compareTo(second.getFileModel().getAttributes().getExtension());
+                break;
+        }
+
+        Collections.sort(files, comparator);
     }
 
     private void triggerNumberOfMatchesNotification(int number) {

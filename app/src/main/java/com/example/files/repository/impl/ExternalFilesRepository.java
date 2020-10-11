@@ -19,7 +19,6 @@ public class ExternalFilesRepository implements FilesRepository {
     private List<FileModel> files = new ArrayList<>();
 
     /**
-     *
      * @return the list of files from the external storage.
      */
     @Override

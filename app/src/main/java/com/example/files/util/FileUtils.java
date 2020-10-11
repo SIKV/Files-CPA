@@ -14,7 +14,9 @@ public class FileUtils {
 
     public static FileAttributes getFileAttributes(File file) {
         FileAttributes attributes = new FileAttributes();
-
+        /*
+         * Seems like Android does not support a time stamp to indicate the time of last modification.
+         */
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             try {
                 Path path = Paths.get(file.toURI());
