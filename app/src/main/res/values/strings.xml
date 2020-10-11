@@ -14,6 +14,7 @@
     <string name="size">Size</string>
     <string name="creation_time">Creation time</string>
     <string name="last_modified_time">Last modified time</string>
+    <string name="path">Path</string>
     <string name="number_of_matches_d">Number of matches: %d</string>
     <string name="sort_by">Sort by</string>
     <string name="filename">Filename</string>

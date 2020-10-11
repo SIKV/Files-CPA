@@ -203,7 +203,9 @@ public class MainViewModel extends AndroidViewModel {
         String text = getApplication().getString(R.string.number_of_matches_d, number);
         String channel = getApplication().getString(R.string.channel_number_of_matches);
 
-        Utils.triggerNotification(getApplication(), text, R.drawable.ic_highlight_black_24dp,
+        int id = 1;
+
+        Utils.triggerNotification(getApplication(), id, text, R.drawable.ic_highlight_black_24dp,
                 null, channel, channel);
     }
 

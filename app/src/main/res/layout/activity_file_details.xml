@@ -49,6 +49,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
                 android:text="@string/size" />
 
             <TextView
@@ -58,13 +59,11 @@
                 android:text="@string/placeholder_empty"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="16dp" />
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="4dp"
                 android:text="@string/creation_time" />
 
             <TextView
@@ -74,13 +73,11 @@
                 android:text="@string/placeholder_empty"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="16dp" />
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="4dp"
                 android:text="@string/last_modified_time" />
 
             <TextView
@@ -89,6 +86,20 @@
                 android:layout_height="wrap_content"
                 android:text="@string/placeholder_empty"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="4dp"
+                android:text="@string/path" />
+
+            <TextView
+                android:id="@+id/pathTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/placeholder_empty"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
         </LinearLayout>
 

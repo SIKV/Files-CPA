@@ -32,6 +32,7 @@ public class FileDetailsActivity extends AppCompatActivity {
     private TextView sizeTextView;
     private TextView creationTimeTextView;
     private TextView lastModifiedTimeTextView;
+    private TextView pathTextView;
 
     private FileDetailsViewModel viewModel;
 
@@ -91,6 +92,10 @@ public class FileDetailsActivity extends AppCompatActivity {
         viewModel.fileLastModifiedTime().observe(this, lastModifiedTime -> {
             lastModifiedTimeTextView.setText(lastModifiedTime);
         });
+
+        viewModel.filePath().observe(this, path -> {
+            pathTextView.setText(path);
+        });
     }
 
     private void initViews() {
@@ -99,5 +104,6 @@ public class FileDetailsActivity extends AppCompatActivity {
         sizeTextView = findViewById(R.id.sizeTextView);
         creationTimeTextView = findViewById(R.id.creationTimeTextView);
         lastModifiedTimeTextView = findViewById(R.id.lastModifiedTimeTextView);
+        pathTextView = findViewById(R.id.pathTextView);
     }
 }

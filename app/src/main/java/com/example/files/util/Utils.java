@@ -16,6 +16,7 @@ import androidx.core.app.NotificationCompat;
 import com.example.files.R;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Utils {
@@ -31,8 +32,8 @@ public class Utils {
         imm.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
     }
 
-    public static String getTimeSting(long timeMillis) {
-        return new Date(timeMillis).toString();
+    public static String formatDateTime(long timeMillis) {
+        return SimpleDateFormat.getDateTimeInstance().format(new Date(timeMillis));
     }
 
     public static String getFileSize(long size) {
@@ -47,8 +48,8 @@ public class Utils {
         return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
     }
 
-    public static void triggerNotification(Context context, String content, @DrawableRes int icon, PendingIntent contentIntent,
-                                           String channelId, String channelName) {
+    public static void triggerNotification(Context context, int id, String content, @DrawableRes int icon,
+                                           PendingIntent contentIntent, String channelId, String channelName) {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId);
 
@@ -69,6 +70,6 @@ public class Utils {
             notificationManager.createNotificationChannel(channel);
         }
 
-        notificationManager.notify(1, builder.build());
+        notificationManager.notify(id, builder.build());
     }
 }

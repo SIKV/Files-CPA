@@ -25,6 +25,7 @@ public class FileDetailsViewModel extends AndroidViewModel {
     private MutableLiveData<String> fileSize = new MutableLiveData<>();
     private MutableLiveData<String> fileCreationTime = new MutableLiveData<>();
     private MutableLiveData<String> fileLastModifiedTime = new MutableLiveData<>();
+    private MutableLiveData<String> filePath = new MutableLiveData<>();
 
     public FileDetailsViewModel(@NonNull Application application) {
         super(application);
@@ -44,6 +45,10 @@ public class FileDetailsViewModel extends AndroidViewModel {
 
     public LiveData<String> fileLastModifiedTime() {
         return fileLastModifiedTime;
+    }
+
+    public LiveData<String> filePath() {
+        return filePath;
     }
 
     public void setFile(FileModel fileModel) {
@@ -72,7 +77,8 @@ public class FileDetailsViewModel extends AndroidViewModel {
         FileAttributes attrs = fileModel.getAttributes();
 
         fileSize.setValue(Utils.getFileSize(attrs.getSize()));
-        fileCreationTime.setValue(Utils.getTimeSting(attrs.getCreationTime()));
-        fileLastModifiedTime.setValue(Utils.getTimeSting(attrs.getLastModifiedTime()));
+        fileCreationTime.setValue(Utils.formatDateTime(attrs.getCreationTime()));
+        fileLastModifiedTime.setValue(Utils.formatDateTime(attrs.getLastModifiedTime()));
+        filePath.setValue(fileModel.getPath());
     }
 }
