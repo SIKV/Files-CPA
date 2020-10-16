@@ -2,6 +2,7 @@ package com.example.files.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -51,10 +52,12 @@ public class MainActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_main);
 
-        viewModel = new ViewModelProvider.AndroidViewModelFactory(getApplication())
-                .create(MainViewModel.class);
+        viewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication()))
+                .get(MainViewModel.class);
 
-        permissionManager.requestStoragePermission(PM_FETCH_FILES_TAG);
+        if (savedInstanceState == null) {
+            permissionManager.requestStoragePermission(PM_FETCH_FILES_TAG);
+        }
 
         initViews();
         setListeners();

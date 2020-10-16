@@ -42,8 +42,8 @@ public class FileDetailsActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_file_details);
 
-        viewModel = new ViewModelProvider.AndroidViewModelFactory(getApplication())
-                .create(FileDetailsViewModel.class);
+        viewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication()))
+                .get(FileDetailsViewModel.class);
 
         FileModel fileModel = getIntent().getParcelableExtra(KEY_FILE_MODEL);
 
@@ -58,7 +58,9 @@ public class FileDetailsActivity extends AppCompatActivity {
 
             observe();
 
-            viewModel.setFile(fileModel);
+            if (savedInstanceState == null) {
+                viewModel.setFile(fileModel);
+            }
         } else {
             Toast.makeText(this, R.string.file_not_found, Toast.LENGTH_LONG)
                     .show();
